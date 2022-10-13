@@ -1,23 +1,49 @@
-import logo from './logo.svg';
-import './App.css';
+import { useState } from "react";
 
 function App() {
+  const [headersDisplay, setHeadersDisplay] = useState([]);
+  const [url, setUrl] = useState("");
+  let headersPair = [];
+  const submitHandler = async (url) => {
+    fetch(url)
+      .then((res) => {
+        for (const header of res.headers) {
+          // headersDisplay.push(header);
+          headersPair.push(header);
+        }
+        console.log(headersPair);
+      })
+      .then((data) => {
+        console.log(data);
+        const newheadersDisplay = headersPair.map((header, index) => {
+          return <p key={index}>{`${header[0]}:${header[1]}`}</p>;
+        });
+        setHeadersDisplay(newheadersDisplay);
+      })
+      .catch((err) => {
+        setHeadersDisplay("unable to get headers");
+      });
+  };
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+      <form
+        onSubmit={(e) => {
+          e.preventDefault();
+          submitHandler(url);
+        }}
+        action=""
+      >
+        <label htmlFor="HTTP ADRESS">HTTP(S)-URL:</label>
+        <input
+          onChange={(e) => setUrl(e.target.value)}
+          type="text"
+          name="HTTP ADRESS"
+          id="HTTP ADRESS"
+        />
+        <button type="submit">Submit</button>
+      </form>
+      <div>{headersDisplay}</div>
     </div>
   );
 }
