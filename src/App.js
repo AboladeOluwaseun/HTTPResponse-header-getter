@@ -8,7 +8,6 @@ function App() {
     fetch(url)
       .then((res) => {
         for (const header of res.headers) {
-          // headersDisplay.push(header);
           headersPair.push(header);
         }
         console.log(headersPair);
